@@ -1,0 +1,19 @@
+
+This video helped me understand how to compile this.
+https://www.youtube.com/watch?v=2JfKINdMwAo&t=326s
+
+I already have mingw-64 
+
+Step 1) run the makefile:
+mingw32-make -f makefile
+
+This will compile everything, and 'pdcurses.a' is the library (similar to a .lib file)
+
+Step 2) get the library and paste it, along with curses.h, wherever you want!
+
+Step 3 - optional) create a c file such as main.c, include curses.h, and build it with:
+gcc main.c -o main.exe pdcurses.a
+
+
+
+
