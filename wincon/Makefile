@@ -6,7 +6,16 @@
 # where tgt can be any of:
 # [all|demos|pdcurses.a|testcurs.exe...]
 
-O = o
+
+
+
+# GE Notes:
+#    first, change the first option to 'O = o' and run: ming32-make -f Makefile DLL=Y WIDE=Y UTF8=Y testcurs.exe
+#    it should produce a bunch of .obj files, but give an error that it can't produce the .dll or .exe
+#    then,  change it to 'O = obj' and run it again
+#    it should work the second time
+
+O = obj # GE changed this from 'o' to 'obj' for zig's compiler
 E = .exe
 
 ifeq ($(OS),Windows_NT)
@@ -26,10 +35,10 @@ include $(common)/libobjs.mif
 
 PDCURSES_WIN_H	= $(osdir)/pdcwin.h
 
-CC		= gcc
+CC		= zig cc # gcc
 AR		= ar
 STRIP		= strip
-LINK		= gcc
+LINK		= zig cc # gcc
 WINDRES		= windres
 
 ifeq ($(DEBUG),Y)
@@ -41,6 +50,8 @@ else
 endif
 
 CFLAGS += -I$(PDCURSES_SRCDIR)
+CFLAGS += -Wno-error=date-time # GE added this to elim a warning from the zig cc compiler
+# CFLAGS += --verbose # GE added this to elim a warning from the zig cc compiler
 
 ifeq ($(WIDE),Y)
 	CFLAGS += -DPDC_WIDE
@@ -50,13 +61,14 @@ ifeq ($(UTF8),Y)
 	CFLAGS += -DPDC_FORCE_UTF8
 endif
 
+# GE changed from pdcurses.o to pdcurses.obj to test zig
 ifeq ($(DLL),Y)
 	CFLAGS += -DPDC_DLL_BUILD
 	LIBEXE = $(CC)
 	LIBFLAGS = -Wl,--out-implib,pdcurses.a -shared -o
 	LIBCURSES = pdcurses.dll
 	CLEAN = $(LIBCURSES) *.a
-	RESOURCE = pdcurses.o
+	RESOURCE = pdcurses.obj 
 else
 	LIBEXE = $(AR)
 	LIBFLAGS = rcv
@@ -76,7 +88,10 @@ libs:	$(LIBCURSES)
 
 clean:
 	-$(RM) *.o
+	-$(RM) *.obj
 	-$(RM) *.exe
+	-$(RM) *.pdb
+	-$(RM) *.dll
 	-$(RM) $(CLEAN)
 
 demos:	$(DEMOS)
@@ -87,8 +102,9 @@ endif
 $(LIBCURSES) : $(LIBOBJS) $(PDCOBJS) $(RESOURCE)
 	$(LIBEXE) $(LIBFLAGS) $@ $?
 
-pdcurses.o: $(common)/pdcurses.rc
-	$(WINDRES) -i $(common)/pdcurses.rc pdcurses.o
+# GE changed from pdcurses.o to pdcurses.obj to test zig
+pdcurses.obj: $(common)/pdcurses.rc
+	$(WINDRES) -i $(common)/pdcurses.rc pdcurses.obj
 
 $(LIBOBJS) $(PDCOBJS) : $(PDCURSES_HEADERS)
 $(PDCOBJS) : $(PDCURSES_WIN_H)

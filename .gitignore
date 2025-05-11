@@ -1,6 +1,9 @@
 
 *.o
+*.obj
 *.exe
+*.pdb
+*.dll
 *.d
 *.a
 
