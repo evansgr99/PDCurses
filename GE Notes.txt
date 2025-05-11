@@ -2,18 +2,19 @@
 This video helped me understand how to compile this.
 https://www.youtube.com/watch?v=2JfKINdMwAo&t=326s
 
-I already have mingw-64 
+I already have mingw-64, and use that for the makefile.
+
+
+
+Step 0) read the top of the Makefile, which has some notes
+- need to set top line to 'o', run the makefile below, then change it to 'obj', then re-run make
+- this is because zig creates .obj files instead of .o files for some reason
+
 
 Step 1) run the makefile:
-mingw32-make -f makefile
+mingw32-make -f Makefile DLL=Y WIDE=Y UTF8=Y 
 
 This will compile everything, and 'pdcurses.a' is the library (similar to a .lib file)
-
-
-Step1b) alternate versions:
-mingw32-make -f Makefile DLL=Y WIDE=Y UTF8=Y    # GE: add '--verbose' if problems
-
-
 
 # Usage: make [-f path\Makefile] [DEBUG=Y] [DLL=Y] [WIDE=Y] [UTF8=Y] [INFOEX=N] [tgt]
 #
