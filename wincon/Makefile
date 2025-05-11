@@ -35,11 +35,14 @@ include $(common)/libobjs.mif
 
 PDCURSES_WIN_H	= $(osdir)/pdcwin.h
 
-CC		= zig cc # gcc
-AR		= ar
+CC		    = zig cc # gcc
+AR		    = ar
 STRIP		= strip
 LINK		= zig cc # gcc
 WINDRES		= windres
+
+ZIGCOMPILE  = zig build-obj beep2.zig -target x86_64-windows-gnu
+ZIGOBJS     = beep2.obj
 
 ifeq ($(DEBUG),Y)
 	CFLAGS  = -g -Wall -DPDCDEBUG
@@ -84,7 +87,9 @@ endif
 
 all:	libs
 
-libs:	$(LIBCURSES)
+
+
+libs:	$(LIBCURSES) 
 
 clean:
 	-$(RM) *.o
@@ -99,23 +104,36 @@ ifneq ($(DEBUG),Y)
 	$(STRIP) *.exe
 endif
 
-$(LIBCURSES) : $(LIBOBJS) $(PDCOBJS) $(RESOURCE)
+# GE added $(ZIGOBJS) to try to add my zig code to it
+$(LIBCURSES) : $(LIBOBJS) $(PDCOBJS) $(ZIGOBJS) $(RESOURCE)
 	$(LIBEXE) $(LIBFLAGS) $@ $?
 
 # GE changed from pdcurses.o to pdcurses.obj to test zig
 pdcurses.obj: $(common)/pdcurses.rc
 	$(WINDRES) -i $(common)/pdcurses.rc pdcurses.obj
 
-$(LIBOBJS) $(PDCOBJS) : $(PDCURSES_HEADERS)
+# GE added $(ZIGOBJS) to try to add my zig code to it
+$(LIBOBJS) $(PDCOBJS) $(ZIGOBJS): $(PDCURSES_HEADERS)
 $(PDCOBJS) : $(PDCURSES_WIN_H)
 $(DEMOS) : $(PDCURSES_CURSES_H) $(LIBCURSES)
 panel.o : $(PANEL_HEADER)
 
-$(LIBOBJS) : %.o: $(srcdir)/%.c
+# GE changed these 2 sections from %.o to %.obj to test zig
+$(LIBOBJS) : %.obj: $(srcdir)/%.c
 	$(CC) -c $(CFLAGS) $<
 
-$(PDCOBJS) : %.o: $(osdir)/%.c
+$(PDCOBJS) : %.obj: $(osdir)/%.c
 	$(CC) -c $(CFLAGS) $<
+
+# GE added this to try to compile the zig files too
+# not working yet; had to manually use this in the terminal:  'zig cc -c beep2.zig -o beep2.obj'
+# then I pasted the obj files to the wincon folder so they could be combined with other objects
+# $(ZIGOBJS) : %.obj: $(srcdir)/%.zig
+#	$(CC) -c $(CFLAGS) $<
+
+# GE code above did not work so trying another way
+# $(ZIGOBJS) : zig build-obj beep2.zig -target x86_64-windows-gnu
+
 
 firework.exe ozdemo.exe rain.exe testcurs.exe worm.exe xmas.exe \
 ptest.exe: %.exe: $(demodir)/%.c

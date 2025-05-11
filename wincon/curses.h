@@ -894,7 +894,7 @@ indicator.
  */
 
 /* GE zig function declarations */
-PDCEX  int     getest(void);
+  int     getest(void);
 
 /* Standard */
 

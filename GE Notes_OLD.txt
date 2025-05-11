@@ -1,0 +1,79 @@
+
+This video helped me understand how to compile this.
+https://www.youtube.com/watch?v=2JfKINdMwAo&t=326s
+
+I already have mingw-64, and use that for the makefile.
+
+
+# May not need step 0 anymore - I think it just works!
+Step 0) read the top of the Makefile, which has some notes
+- need to set top line to 'o', run the makefile below, then change it to 'obj', then re-run make
+- this is because zig creates .obj files instead of .o files for some reason
+
+
+Step 0.5) if the makefile is not compiling zig correctly:
+zig cc -c beep2.zig -o beep2.obj
+
+also need to try:
+zig build-obj beep2.zig -target x86_64-windows-gnu
+
+
+
+Step 1) run the makefile:
+mingw32-make -f Makefile DLL=Y WIDE=Y UTF8=Y xmas.exe
+
+This will compile everything, and 'pdcurses.a' is the library (similar to a .lib file)
+
+# Usage: make [-f path\Makefile] [DEBUG=Y] [DLL=Y] [WIDE=Y] [UTF8=Y] [INFOEX=N] [tgt]
+#
+# where tgt can be any of:  [all|demos|pdcurses.a|testcurs.exe...]
+
+
+
+Step 2) get the library and paste it, along with curses.h, wherever you want!
+
+
+
+Step 3 - optional) create a c file such as main.c, include curses.h, and build it with:
+mingw-64:        gcc main.c -o main.exe pdcurses.a
+zig version:  zig cc main.c -o main.exe pdcurses.a 
+
+
+
+
+
+
+ISSUES:
+I am trying to add a zig file into the dll, and then call that fn from my other file.  but it doesn't work.
+
+can use 'gendef <file>.dll' to create a .def file with all of the functions within it
+
+zig cc  -Wl,--out-implib,pdcurses.a -shared -o pdcurses.dll addch.obj addchstr.obj addstr.obj attr.obj beep.obj beep2.obj bkgd.obj border.obj clear.obj color.obj delch.obj deleteln.obj getch.obj getstr.obj getyx.obj inch.obj inchstr.obj initscr.obj inopts.obj insch.obj insstr.obj instr.obj kernel.obj keyname.obj mouse.obj move.obj outopts.obj overlay.obj pad.obj panel.obj printw.obj refresh.obj scanw.obj scr_dump.obj scroll.obj slk.obj termattr.obj touch.obj util.obj window.obj debug.obj pdcclip.obj pdcdisp.obj pdcgetsc.obj pdckbd.obj pdcscrn.obj pdcsetsc.obj pdcutil.obj pdcurses.obj
+
+=====================
+
+next test:
+created ctest.c and ctest.h
+
+created czigtest.zig
+zig build-obj czigtest.zig -target x86_64-windows-gnu
+
+tried to compile using:
+gcc -shared -o ctest.dll czigtest.obj ctest.c -Wl,--out-implib,libctest.a
+
+finally, try to compile my .zig file to use it
+zig build-exe czigtest_main.zig -L. -lctest
+
+That worked!
+
+=========================
+
+
+tried this, still didn't work:
+
+zig cc -Wl,--out-implib,libpdcurses.a -shared -o pdcurses.dll addch.obj addchstr.obj addstr.obj attr.obj beep.obj beep2.obj bkgd.obj border.obj clear.obj color.obj delch.obj deleteln.obj getch.obj getstr.obj getyx.obj inch.obj inchstr.obj initscr.obj inopts.obj insch.obj insstr.obj instr.obj kernel.obj keyname.obj mouse.obj move.obj outopts.obj overlay.obj pad.obj panel.obj printw.obj refresh.obj scanw.obj scr_dump.obj scroll.obj slk.obj termattr.obj touch.obj util.obj window.obj debug.obj pdcclip.obj pdcdisp.obj pdcgetsc.obj pdckbd.obj pdcscrn.obj pdcsetsc.obj pdcutil.obj pdcurses.obj 
+
+zig cc -Wl,--out-implib,libpdcurses.a -shared -o pdcurses.dll attr.obj beep.obj beep2.obj bkgd.obj border.obj clear.obj color.obj delch.obj deleteln.obj getch.obj getstr.obj getyx.obj inch.obj inchstr.obj initscr.obj inopts.obj insch.obj insstr.obj instr.obj kernel.obj keyname.obj mouse.obj move.obj outopts.obj overlay.obj pad.obj panel.obj printw.obj refresh.obj scanw.obj scr_dump.obj scroll.obj slk.obj termattr.obj touch.obj util.obj window.obj debug.obj pdcclip.obj pdcdisp.obj pdcgetsc.obj pdckbd.obj pdcscrn.obj pdcsetsc.obj pdcutil.obj pdcurses.obj 
+
+
+

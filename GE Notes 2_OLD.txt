@@ -1,0 +1,50 @@
+
+
+
+
+
+zig cc  -Wl,--out-implib,pdcurses.a -shared -o pdcurses.dll addch.obj addchstr.obj addstr.obj attr.obj beep.obj beep2.obj bkgd.obj border.obj clear.obj color.obj delch.obj deleteln.obj getch.obj getstr.obj getyx.obj inch.obj inchstr.obj initscr.obj inopts.obj insch.obj insstr.obj instr.obj kernel.obj keyname.obj mouse.obj move.obj outopts.obj overlay.obj pad.obj panel.obj printw.obj refresh.obj scanw.obj scr_dump.obj scroll.obj slk.obj termattr.obj touch.obj util.obj window.obj debug.obj pdcclip.obj pdcdisp.obj pdcgetsc.obj pdckbd.obj pdcscrn.obj pdcsetsc.obj pdcutil.obj pdcurses.obj
+
+
+gcc  -Wl,--out-implib,pdcurses.a -shared -o pdcurses.dll addch.obj addchstr.obj addstr.obj attr.obj beep.obj beep2.obj bkgd.obj border.obj clear.obj color.obj delch.obj deleteln.obj getch.obj getstr.obj getyx.obj inch.obj inchstr.obj initscr.obj inopts.obj insch.obj insstr.obj instr.obj kernel.obj keyname.obj mouse.obj move.obj outopts.obj overlay.obj pad.obj panel.obj printw.obj refresh.obj scanw.obj scr_dump.obj scroll.obj slk.obj termattr.obj touch.obj util.obj window.obj debug.obj pdcclip.obj pdcdisp.obj pdcgetsc.obj pdckbd.obj pdcscrn.obj pdcsetsc.obj pdcutil.obj pdcurses.obj
+
+
+
+
+
+
+gcc -Wl,--out-implib,libctest.a -shared -o ctest.dll czigtest.obj ctest.c 
+
+"curspriv.h"
+
+
+
+zig cc -Wl,--out-implib,libpdcurses.a -shared -o pdcurses.dll addch.obj addchstr.obj addstr.obj attr.obj beep.obj beep2.obj bkgd.obj border.obj clear.obj color.obj delch.obj deleteln.obj getch.obj getstr.obj getyx.obj inch.obj inchstr.obj initscr.obj inopts.obj insch.obj insstr.obj instr.obj kernel.obj keyname.obj mouse.obj move.obj outopts.obj overlay.obj pad.obj panel.obj printw.obj refresh.obj scanw.obj scr_dump.obj scroll.obj slk.obj termattr.obj touch.obj util.obj window.obj debug.obj pdcclip.obj pdcdisp.obj pdcgetsc.obj pdckbd.obj pdcscrn.obj pdcsetsc.obj pdcutil.obj pdcurses.obj 
+
+
+attr.c beep.c bkgd.c border.c clear.c color.c delch.c deleteln.c getch.c getstr.c getyx.c inch.c inchstr.c initscr.c inopts.c insch.c insstr.c instr.c kernel.c keyname.c mouse.c move.c outopts.c overlay.c pad.c panel.c printw.c refresh.c scanw.c scr_dump.c scroll.c slk.c termattr.c touch.c util.c window.c debug.c pdcclip.c pdcdisp.c pdcgetsc.c pdckbd.c pdcscrn.c pdcsetsc.c pdcutil.c
+
+
+# This is my latest attempt to compile without using the makefile
+
+Step 1) build the beep2.obj
+zig build-obj beep2.zig -target x86_64-windows-gnu
+
+
+Step 2) build the pdcurses.obj
+windres pdcurses.rc pdcurses.obj
+
+
+Step 3) build everything else and combine with the objects above
+zig cc -Wl,--out-implib,libpdcurses.a -shared -o   pdcurses.dll beep2.obj pdcurses.obj addch.c addchstr.c addstr.c attr.c beep.c bkgd.c border.c clear.c color.c delch.c deleteln.c getch.c getstr.c getyx.c inch.c inchstr.c initscr.c inopts.c insch.c insstr.c instr.c kernel.c keyname.c mouse.c move.c outopts.c overlay.c pad.c panel.c printw.c refresh.c scanw.c scr_dump.c scroll.c slk.c termattr.c touch.c util.c window.c debug.c pdcclip.c pdcdisp.c pdcgetsc.c pdckbd.c pdcscrn.c pdcsetsc.c pdcutil.c
+
+zig build-exe main.zig -L. -lpdcurses
+
+
+
+
+
+
+
+
+
