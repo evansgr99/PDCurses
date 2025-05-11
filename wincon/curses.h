@@ -895,6 +895,8 @@ indicator.
 
 /* GE zig function declarations */
   int     getest(void);
+  int     beep2(void);
+  int     flash2(void);
 
 /* Standard */
 

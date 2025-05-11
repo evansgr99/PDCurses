@@ -13,20 +13,22 @@ mingw32-make clean
 
 
 Step 1) build the beep2.obj
-zig build-obj beep2.zig -target x86_64-windows-gnu
+zig build-obj beep2.zig -lc -target x86_64-windows-gnu
 
 
 Step 2) build the pdcurses.obj
 windres pdcurses.rc pdcurses.obj
 
 
-Step 2.5) copy/paste the libcurses.a and the pdcurses.dll files to the root directory.
-
-
 Step 3) build everything else and combine with the objects above
 zig cc -Wl,--out-implib,libpdcurses.a -shared -o   pdcurses.dll beep2.obj pdcurses.obj addch.c addchstr.c addstr.c attr.c beep.c bkgd.c border.c clear.c color.c delch.c deleteln.c getch.c getstr.c getyx.c inch.c inchstr.c initscr.c inopts.c insch.c insstr.c instr.c kernel.c keyname.c mouse.c move.c outopts.c overlay.c pad.c panel.c printw.c refresh.c scanw.c scr_dump.c scroll.c slk.c termattr.c touch.c util.c window.c debug.c pdcclip.c pdcdisp.c pdcgetsc.c pdckbd.c pdcscrn.c pdcsetsc.c pdcutil.c
 
+
+Step 3.5) copy/paste the libcurses.a and the pdcurses.dll files to the root directory.
+
+
+Step 4) compile the main.zig file and link it to the static library
 zig build-exe main.zig -lc -lpdcurses -L.
 
-Step 4) finally, I can copy/paste the <file>.exe and the associated .dll file anywhere I want and they will work!
+Step 5) finally, I can copy/paste the <file>.exe and the associated .dll file anywhere I want and they will work!
 

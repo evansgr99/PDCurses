@@ -1,52 +1,57 @@
 // const std = @import("std");
-// const c = @cImport({
-//     //@cInclude("D:/MyDocuments/dv/Github/PDCurses/curspriv.h");
-//     @cInclude("D:/MyDocuments/dv/Github/PDCurses/curses.h");
-// });
+const c = @cImport({
+    @cInclude("D:/MyDocuments/dv/Github/PDCurses/wincon/curspriv.h");
+    //@cInclude("D:/MyDocuments/dv/Github/PDCurses/wincon/curses.h");
+});
 
-// const ERR = -1;
-// const OK = 0;
-// const A_REVERSE = 0x40000000; // Example attribute flag; adjust based on your actual implementation
+export fn beep2() c_int {
 
-// const Screen = struct {
-//     _y: [][]u32, // assuming 32-bit cells with attributes
-// };
+    // TODO: macro that only works if DEBUG mode is enabled.  Work on later.
+    // PDC_LOG("beep() - called\n");
 
-// extern fn PDC_LOG(msg: [*:0]const u8) void;
-// extern fn wrefresh(screen: *Screen) void;
-// extern fn napms(ms: c_int) void;
+    if (c.SP == null)
+        return c.ERR;
 
-// export fn flash2() c_int {
-//     var z: i32 = 0;
-//     var y: i32 = 0;
-//     var x: i32 = 0;
+    if (c.SP.*.audible) {
+        c.PDC_beep();
+    } else {
+        _ = c.flash(); // call flash, ignore its return value
+    }
 
-//     // TODO: macro that only works if DEBUG mode is enabled.  Work on later.
-//     // PDC_LOG("flash() - called\n");
+    return c.OK;
+}
 
-//     if (c.curscr == null) return c.ERR;
+export fn flash2() c_int {
+    var z: usize = 0;
+    var y: usize = 0;
+    var x: usize = 0;
 
-//     const screen = c.curscr.?;
+    // TODO: macro that only works if DEBUG mode is enabled.  Work on later.
+    // PDC_LOG("flash() - called\n");
 
-//     // Reverse each cell; wait; restore the screen
-//     while (z < 2) : (z += 1) {
-//         y = 0;
-//         while (y < c.LINES) : (y += 1) {
-//             x = 0;
-//             while (x < c.COLS) : (x += 1) {
-//                 screen._y[y][x] ^= c.A_REVERSE;
-//             }
-//         }
+    if (c.curscr == null) return c.ERR;
 
-//         c.wrefresh(screen);
+    //const screen = c.curscr.*;
 
-//         if (z == 0) {
-//             c.napms(50);
-//         }
-//     }
+    // Reverse each cell; wait; restore the screen
+    while (z < 2) : (z += 1) {
+        y = 0;
+        while (y < c.LINES) : (y += 1) {
+            x = 0;
+            while (x < c.COLS) : (x += 1) {
+                c.curscr.*._y[y][x] ^= c.A_REVERSE;
+            }
+        }
 
-//     return c.OK;
-// }
+        _ = c.wrefresh(c.curscr);
+
+        if (z == 0) {
+            _ = c.napms(50);
+        }
+    }
+
+    return c.OK;
+}
 
 export fn getest() c_int {
     // std.debug.print("getest() - called\n", .{});

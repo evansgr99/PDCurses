@@ -1,7 +1,7 @@
 const std = @import("std");
 
 const c = @cImport({
-    @cInclude("D:/MyDocuments/dv/Github/PDcurses/curses.h");
+    @cInclude("D:/MyDocuments/dv/Github/PDcurses/wincon/curses.h");
 });
 
 // extern fn getest() void;
@@ -17,6 +17,9 @@ fn first_test() void {
     // std.debug.print("return val of printw={d}", .{test_int});
 
     _ = c.refresh();
+
+    _ = c.flash2();
+    _ = c.beep2();
 
     const key_input: c_int = c.getch();
 

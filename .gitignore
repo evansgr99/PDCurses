@@ -9,6 +9,9 @@
 
 bin/
 obj/
+zig-out/
+.zig-cache/
+zig-cache/
 
 
 
