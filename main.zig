@@ -9,29 +9,26 @@ const c = @cImport({
 const KEY_Q: c_int = 113;
 
 fn first_test() void {
-    const win = c.initscr(); //  : [*c]win
+    _ = c.initscr(); //  : [*c]win
+    _ = c.printw("hello again\n"); // this prints something to the screen, and returns the num of chars it printed
+    _ = c.refresh();
+    // _ = c.flash(); // testing my custom code - works!
+    // _ = c.beep(); // testing my custom code - works!
 
-    // this prints something to the screen, and returns the num of chars it printed
-    const test_int: c_int = c.printw("hello again\n");
-    _ = test_int;
-    // std.debug.print("return val of printw={d}", .{test_int});
+    const res = c.move2(2, 2);
+    std.debug.print("got return valu from move2 [{d}]\n", .{res});
+
+    const res2 = c.mvcur2(5, 5, 5, 5);
+    std.debug.print("got return valu from mvcur2 [{d}]\n", .{res2});
 
     _ = c.refresh();
 
-    _ = c.flash2();
-    _ = c.beep2();
+    _ = c.printw("after movements\n"); // this prints something to the screen, and returns the num of chars it printed
 
     const key_input: c_int = c.getch();
+    std.debug.print("got key [{d}]\n", .{key_input});
 
-    std.debug.print("got key [{d}]", .{key_input});
-
-    const ew: c_int = c.endwin();
-    std.debug.print("got endwin [{d}]", .{ew});
-
-    _ = win;
-    // _ = c;
-    const x = c.getest();
-    std.debug.print("d is {d}.\n", .{x});
+    _ = c.endwin();
 }
 
 pub fn main() !void {

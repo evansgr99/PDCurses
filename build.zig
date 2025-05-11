@@ -9,7 +9,7 @@ pub fn build(b: *std.Build) void {
 
     //
     // To use:
-    // 1. zig build build-obj to build the zig file
+    // 1. zig build build-zig to build the zig file
     // 2. zig build build-pdcurses to build the pdcurses.obj file which works differently than the other files
     // 3. zig build build-pdcurses-dll to build the final dll
     // 4. build any other zig program that will attach to the dll
@@ -19,18 +19,34 @@ pub fn build(b: *std.Build) void {
     // Step 1: build .zig files in the wincon directory
     //
     // GE: trying to duplicate this command:  zig build-obj beep2.zig -lc -target x86_64-windows-gnu
-    const beep2_obj = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/beep2.zig", "-lc", "-target", "x86_64-windows-gnu" });
+    const beep_obj = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/beep.zig", "-lc", "-target", "x86_64-windows-gnu" });
 
     // Move the file after it's built
-    const move_obj = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "beep2.obj", "wincon/beep2.obj" });
-    move_obj.step.dependOn(&beep2_obj.step);
+    const move_obj = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "beep.obj", "wincon/beep.obj" });
+    move_obj.step.dependOn(&beep_obj.step);
 
     // delete the extra '.obj.obj' file
-    const del_old = b.addSystemCommand(&.{ "cmd", "/C", "del", "beep2.obj.obj" });
+    const del_old = b.addSystemCommand(&.{ "cmd", "/C", "del", "beep.obj.obj" });
     del_old.step.dependOn(&move_obj.step);
 
-    const build_beep2_step = b.step("build-zig", "Build beep2.obj for Windows");
-    build_beep2_step.dependOn(&del_old.step);
+    const build_beep_step = b.step("build-zig", "Build beep.obj for Windows");
+    build_beep_step.dependOn(&del_old.step);
+
+    //
+    // move.zig
+    //
+    const zig_move_obj = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/move2.zig", "-lc", "-target", "x86_64-windows-gnu" });
+
+    // Move the file after it's built
+    const move_move_obj = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "move2.obj", "wincon/move2.obj" });
+    move_move_obj.step.dependOn(&zig_move_obj.step);
+
+    // delete the extra '.obj.obj' file
+    const del_old_move = b.addSystemCommand(&.{ "cmd", "/C", "del", "move2.obj.obj" });
+    del_old_move.step.dependOn(&move_move_obj.step);
+
+    const build_move_step = b.step("build-zig2", "Build move.obj for Windows");
+    build_move_step.dependOn(&del_old_move.step);
 
     //
     // Step 2: build .c files in the wincon directory
@@ -48,7 +64,66 @@ pub fn build(b: *std.Build) void {
     //clear.c color.c delch.c deleteln.c getch.c getstr.c getyx.c inch.c inchstr.c initscr.c inopts.c insch.c insstr.c instr.c kernel.c keyname.c mouse.c
     //move.c outopts.c overlay.c pad.c panel.c printw.c refresh.c scanw.c scr_dump.c scroll.c slk.c termattr.c touch.c util.c window.c debug.c pdcclip.c
     //pdcdisp.c pdcgetsc.c pdckbd.c pdcscrn.c pdcsetsc.c pdcutil.c
-    const pdcurses_dll = b.addSystemCommand(&.{ "zig", "cc", "-Wl,--out-implib,zig-out/lib/pdcurses.a", "-shared", "-o", "zig-out/lib/pdcurses.dll", "wincon/beep2.obj", "wincon/pdcurses.obj", "wincon/addch.c", "wincon/addchstr.c", "wincon/addstr.c", "wincon/attr.c", "wincon/beep.c", "wincon/bkgd.c", "wincon/border.c", "wincon/clear.c", "wincon/color.c", "wincon/delch.c", "wincon/deleteln.c", "wincon/getch.c", "wincon/getstr.c", "wincon/getyx.c", "wincon/inch.c", "wincon/inchstr.c", "wincon/initscr.c", "wincon/inopts.c", "wincon/insch.c", "wincon/insstr.c", "wincon/instr.c", "wincon/kernel.c", "wincon/keyname.c", "wincon/mouse.c", "wincon/move.c", "wincon/outopts.c", "wincon/overlay.c", "wincon/pad.c", "wincon/panel.c", "wincon/printw.c", "wincon/refresh.c", "wincon/scanw.c", "wincon/scr_dump.c", "wincon/scroll.c", "wincon/slk.c", "wincon/termattr.c", "wincon/touch.c", "wincon/util.c", "wincon/window.c", "wincon/debug.c", "wincon/pdcclip.c", "wincon/pdcdisp.c", "wincon/pdcgetsc.c", "wincon/pdckbd.c", "wincon/pdcscrn.c", "wincon/pdcsetsc.c", "wincon/pdcutil.c" });
+    //
+    // FINISHED files: beep.c
+    //
+    const pdcurses_dll = b.addSystemCommand(&.{
+        "zig",
+        "cc",
+        "-Wl,--out-implib,zig-out/lib/pdcurses.a",
+        "-shared",
+        "-o",
+        "zig-out/lib/pdcurses.dll",
+        "wincon/beep.obj",
+        "wincon/move2.obj",
+        "wincon/pdcurses.obj",
+        "wincon/addch.c",
+        "wincon/addchstr.c",
+        "wincon/addstr.c",
+        "wincon/attr.c",
+        "wincon/bkgd.c",
+        "wincon/border.c",
+        "wincon/clear.c",
+        "wincon/color.c",
+        "wincon/delch.c",
+        "wincon/deleteln.c",
+        "wincon/getch.c",
+        "wincon/getstr.c",
+        "wincon/getyx.c",
+        "wincon/inch.c",
+        "wincon/inchstr.c",
+        "wincon/initscr.c",
+        "wincon/inopts.c",
+        "wincon/insch.c",
+        "wincon/insstr.c",
+        "wincon/instr.c",
+        "wincon/kernel.c",
+        "wincon/keyname.c",
+        "wincon/mouse.c",
+        "wincon/move.c",
+        "wincon/outopts.c",
+        "wincon/overlay.c",
+        "wincon/pad.c",
+        "wincon/panel.c",
+        "wincon/printw.c",
+        "wincon/refresh.c",
+        "wincon/scanw.c",
+        "wincon/scr_dump.c",
+        "wincon/scroll.c",
+        "wincon/slk.c",
+        "wincon/termattr.c",
+        "wincon/touch.c",
+        "wincon/util.c",
+        "wincon/window.c",
+        "wincon/debug.c",
+        "wincon/pdcclip.c",
+        "wincon/pdcdisp.c",
+        "wincon/pdcgetsc.c",
+        "wincon/pdckbd.c",
+        "wincon/pdcscrn.c",
+        "wincon/pdcsetsc.c",
+        "wincon/pdcutil.c",
+    });
     //pdcurses_dll.step.dependOn(&build_pdcurses_step.step);
     const build_dll_step = b.step("build-pdcurses-dll", "Build DLL for Windows");
     build_dll_step.dependOn(&pdcurses_dll.step);
