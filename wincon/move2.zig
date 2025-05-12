@@ -52,6 +52,89 @@ const c = @cImport({
 //       4) TESTING!  so far, move2 seems to work, but not sure how to test mvcur2
 //
 
+//
+// GE testing definition of this c struct from curses.h in zig:
+//
+
+// original version
+// typedef struct _win       /* definition of a window */
+// {
+//     int   _cury;          /* current pseudo-cursor */
+//     int   _curx;
+//     int   _maxy;          /* max window coordinates */
+//     int   _maxx;
+//     int   _begy;          /* origin on screen */
+//     int   _begx;
+//     int   _flags;         /* window properties */
+//     chtype _attrs;        /* standard attributes and colors */
+//     chtype _bkgd;         /* background, normally blank */
+//     bool  _clear;         /* causes clear at next refresh */
+//     bool  _leaveit;       /* leaves cursor where it is */
+//     bool  _scroll;        /* allows window scrolling */
+//     bool  _nodelay;       /* input character wait flag */
+//     bool  _immed;         /* immediate update flag */
+//     bool  _sync;          /* synchronise window ancestors */
+//     bool  _use_keypad;    /* flags keypad key mode active */
+//     chtype **_y;          /* pointer to line pointer array */
+//     int   *_firstch;      /* first changed character in line */
+//     int   *_lastch;       /* last changed character in line */
+//     int   _tmarg;         /* top of scrolling region */
+//     int   _bmarg;         /* bottom of scrolling region */
+//     int   _delayms;       /* milliseconds of delay for getch() */
+//     int   _parx, _pary;   /* coords relative to parent (0,0) */
+//     struct _win *_parent; /* subwin's pointer to parent win */
+
+//     /* these are used only if this is a pad */
+//     struct pdat
+//     {
+//         int _pad_y;
+//         int _pad_x;
+//         int _pad_top;
+//         int _pad_left;
+//         int _pad_bottom;
+//         int _pad_right;
+//     } _pad;               /* Pad-properties structure */
+// } WINDOW;
+
+// zig version
+pub const WINDOW = extern struct { // definition of a window
+    _cury: c_int, // current pseudo-cursor
+    _curx: c_int,
+    _maxy: c_int, // max window coordinates
+    _maxx: c_int,
+    _begy: c_int, // origin on screen
+    _begx: c_int,
+    _flags: c_int, // window properties
+    _attrs: c_ulong, // standard attributes and colors
+    _bkgd: c_ulong, // background, normally blank
+    _clear: bool, // causes clear at next refresh
+    _leaveit: bool, // leaves cursor where it is
+    _scroll: bool, // allows window scrolling
+    _nodelay: bool, // input character wait flag
+    _immed: bool, // immediate update flag
+    _sync: bool, // synchronise window ancestors
+    _use_keypad: bool, // flags keypad key mode active
+    _y: [*][*]c_ulong, // pointer to line pointer array
+    _firstch: [*]c_int, // first changed character in line
+    _lastch: [*]c_int, // last changed character in line
+    _tmarg: c_int, // top of scrolling region
+    _bmarg: c_int, // bottom of scrolling region
+    _delayms: c_int, // milliseconds of delay for getch()
+    _parx: c_int, // coords relative to parent (0,0)
+    _pary: c_int,
+    _parent: ?*WINDOW, // subwin's pointer to parent win
+
+    // used only if this is a pad
+    _pad: extern struct { // Pad-properties structure
+        _pad_y: c_int,
+        _pad_x: c_int,
+        _pad_top: c_int,
+        _pad_left: c_int,
+        _pad_bottom: c_int,
+        _pad_right: c_int,
+    },
+};
+
 export fn move2(y: c_int, x: c_int) c_int {
     // TODO: macro that only works if DEBUG mode is enabled. Work on later.
     // PDC_LOG("move() - called: y=%d x=%d\n", y, x);
@@ -89,17 +172,17 @@ export fn mvcur2(oldrow: c_int, oldcol: c_int, newrow: c_int, newcol: c_int) c_i
 }
 
 // TODO: not sure how to pass in that WINDOW struct yet
-// export fn wmove2(win: *WINDOW, y: c_int, x: c_int) c_int {
-//     // TODO: macro that only works if DEBUG mode is enabled. Work on later.
-//     // PDC_LOG("wmove() - called: y=%d x=%d\n", y, x);
+export fn wmove2(win: ?*WINDOW, y: c_int, x: c_int) c_int {
+    // TODO: macro that only works if DEBUG mode is enabled. Work on later.
+    // PDC_LOG("wmove() - called: y=%d x=%d\n", y, x);
 
-//     if (win == null) return c.ERR;
+    if (win == null) return c.ERR;
 
-//     if (x < 0 or y < 0 or x >= win._maxx or y >= win._maxy)
-//         return c.ERR;
+    if (x < 0 or y < 0 or x >= win.?._maxx or y >= win.?._maxy)
+        return c.ERR;
 
-//     win._curx = x;
-//     win._cury = y;
+    win.?._curx = x;
+    win.?._cury = y;
 
-//     return c.OK;
-// }
+    return c.OK;
+}

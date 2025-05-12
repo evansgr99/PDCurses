@@ -912,7 +912,7 @@ PDCEX  int     attr_off(attr_t, void *);
 PDCEX  int     attr_on(attr_t, void *);
 PDCEX  int     attr_set(attr_t, short, void *);
 PDCEX  int     baudrate(void);
-PDCEX  int     beep(void); // file: beep.zig, TODO: handle DEBUG macro, use relative path for include
+PDCEX  int     beep(void); // beep.zig, TODO: handle DEBUG macro, use relative path for include
 PDCEX  int     bkgd(chtype);
 PDCEX  void    bkgdset(chtype);
 PDCEX  int     border(chtype, chtype, chtype, chtype,
@@ -946,7 +946,7 @@ PDCEX  int     endwin(void);
 PDCEX  char    erasechar(void);
 PDCEX  int     erase(void);
 PDCEX  void    filter(void);
-PDCEX  int     flash(void); // file: beep.zig, TODO: handle DEBUG macro, use relative path for include
+PDCEX  int     flash(void); // beep.zig, TODO: handle DEBUG macro, use relative path for include
 PDCEX  int     flushinp(void);
 PDCEX  chtype  getbkgd(WINDOW *);
 PDCEX  int     getnstr(char *, int);
@@ -984,7 +984,7 @@ PDCEX  int     leaveok(WINDOW *, bool);
 PDCEX  char   *longname(void);
 PDCEX  int     meta(WINDOW *, bool);
 PDCEX  int     move(int, int);
-PDCEX  int     move2(int, int);              // TODO: file: move.zig, IN PROCESS 
+PDCEX  int     move2(int, int);              // TODO: move.zig, IN PROCESS 
 PDCEX  int     mvaddch(int, int, const chtype);
 PDCEX  int     mvaddchnstr(int, int, const chtype *, int);
 PDCEX  int     mvaddchstr(int, int, const chtype *);
@@ -992,7 +992,7 @@ PDCEX  int     mvaddnstr(int, int, const char *, int);
 PDCEX  int     mvaddstr(int, int, const char *);
 PDCEX  int     mvchgat(int, int, int, attr_t, short, const void *);
 PDCEX  int     mvcur(int, int, int, int);
-PDCEX  int     mvcur2(int, int, int, int);    // TODO: file: move.zig, IN PROCESS
+PDCEX  int     mvcur2(int, int, int, int);    // TODO: move.zig, IN PROCESS
 PDCEX  int     mvdelch(int, int);
 PDCEX  int     mvderwin(WINDOW *, int, int);
 PDCEX  int     mvgetch(int, int);

@@ -15,11 +15,17 @@ fn first_test() void {
     // _ = c.flash(); // testing my custom code - works!
     // _ = c.beep(); // testing my custom code - works!
 
-    const res = c.move2(2, 2);
-    std.debug.print("got return valu from move2 [{d}]\n", .{res});
+    _ = c.move2(2, 2);
 
-    const res2 = c.mvcur2(5, 5, 5, 5);
-    std.debug.print("got return valu from mvcur2 [{d}]\n", .{res2});
+    _ = c.mvcur2(5, 5, 5, 5);
+
+    _ = c.wmove2(c.stdscr, 10, 10);
+
+    _ = c.refresh();
+
+    _ = c.printw("after movements\n"); // this prints something to the screen, and returns the num of chars it printed
+
+    _ = c.wmove2(c.stdscr, 7, 18);
 
     _ = c.refresh();
 
@@ -27,6 +33,8 @@ fn first_test() void {
 
     const key_input: c_int = c.getch();
     std.debug.print("got key [{d}]\n", .{key_input});
+
+    //std.debug.print("chtype={}", .{@sizeOf(c.chtype)});
 
     _ = c.endwin();
 }

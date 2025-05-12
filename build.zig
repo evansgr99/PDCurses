@@ -49,6 +49,22 @@ pub fn build(b: *std.Build) void {
     build_move_step.dependOn(&del_old_move.step);
 
     //
+    // initscr.zig
+    //
+    const initscr_zig = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/initscr2.zig", "-lc", "-target", "x86_64-windows-gnu" });
+
+    // Move the file after it's built
+    const mv_initscr = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "move2.obj", "wincon/move2.obj" });
+    mv_initscr.step.dependOn(&initscr_zig.step);
+
+    // delete the extra '.obj.obj' file
+    const del_initscr_objobj = b.addSystemCommand(&.{ "cmd", "/C", "del", "initscr2.obj.obj" });
+    del_initscr_objobj.step.dependOn(&mv_initscr.step);
+
+    const build_initscr = b.step("initscr", "Build zig object");
+    build_initscr.dependOn(&del_initscr_objobj.step);
+
+    //
     // Step 2: build .c files in the wincon directory
     //
     // GE: trying to duplicate this command:  windres pdcurses.rc pdcurses.obj
