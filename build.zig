@@ -102,10 +102,11 @@ pub fn build(b: *std.Build) void {
     const pdcurses_dll = b.addSystemCommand(&.{
         "zig",
         "cc",
-        "-Wl,--out-implib,zig-out/lib/pdcurses.a",
+        "-Wl,--out-implib,pdcurses.a",
+        "-DPDC_WIDE -DPDC_FORCE_UTF8",
         "-shared",
         "-o",
-        "zig-out/lib/pdcurses.dll",
+        "pdcurses.dll",
         "wincon/beep.obj",
         "wincon/move2.obj",
         "wincon/color2.obj",

@@ -33,9 +33,9 @@ fn first_test() void {
 
     if (c.has_colors2()) {
         _ = c.start_color2();
-        _ = c.init_pair(13, c.COLOR_CYAN, c.COLOR_RED);
+        const ip2 = c.init_pair2(13, c.COLOR_MAGENTA, c.COLOR_GREEN);
         _ = c.attron(c.COLOR_PAIR(13));
-        _ = c.printw("some colored text");
+        _ = c.printw("some colored text %d", ip2);
         _ = c.attroff(c.COLOR_PAIR(13));
         _ = c.refresh();
     } else {

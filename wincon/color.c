@@ -175,9 +175,18 @@ int init_pair(short pair, short fg, short bg)
 {
     PDC_LOG(("init_pair() - called: pair %d fg %d bg %d\n", pair, fg, bg));
 
-    if (!SP || !SP->color_started || pair < 1 || pair >= COLOR_PAIRS ||
-        fg < first_col || fg >= COLORS || bg < first_col || bg >= COLORS)
+    //printf("DEBUG [c]init_pair() :: vars: COLORS %d first_col %d \n", COLORS, first_col);
+
+
+    // printf("[c]init_pair() :: (pair %d > 1) or (pair %d >= COLOR_PAIRS %d) or (fg[%d]<first_col[%d]==%d) or (fg %d >= COLORS %d) or (bg %d < first_col %d) or (bg %d >= COLORS %d)\n", pair, pair, COLOR_PAIRS, fg, first_col, (fg<first_col), fg, COLORS, bg, first_col, bg, COLORS);
+
+
+    // GE modified this to help with debugging during translation
+    if (!SP || !SP->color_started || pair < 1 || pair >= COLOR_PAIRS || fg < first_col || fg >= COLORS || bg < first_col || bg >= COLORS) {
+        // printf("DEBUG [c]init_pair() :: returning ERR :: (pair %d > 1) or (pair %d >= COLOR_PAIRS %d) or (fg %d < first_col %d) or (fg %d >= COLORS %d) or (bg %d < first_col %d) or (bg %d >= COLORS %d)\n", pair, pair, COLOR_PAIRS, fg, first_col, fg, COLORS, bg, first_col, bg, COLORS);
         return ERR;
+    }
+        
 
     _init_pair_core(pair, fg, bg);
 

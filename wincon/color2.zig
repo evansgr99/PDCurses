@@ -6,10 +6,28 @@ const c = @cImport({
     @cInclude("D:/MyDocuments/dv/Github/PDCurses/wincon/curspriv.h"); // TODO: change to relative path
 });
 
-var COLORS: c_int = 0;
+//    CHECKLIST
+//    int start_color(void); - not tested
+//    bool has_colors(void);
+//    int init_pair(short pair, short fg, short bg);
+//    int pair_content(short pair, short *fg, short *bg);
+//    bool can_change_color(void);
+//    int init_color(short color, short red, short green, short blue);
+//    int color_content(short color, short *red, short *green, short *blue);
+//    int alloc_pair(int fg, int bg);
+//    int assume_default_colors(int f, int b);
+//    int find_pair(int fg, int bg);
+//    int free_pair(int pair);
+//    int use_default_colors(void);
+//    int PDC_set_line_color(short color);
+
+// global variable
+extern var COLORS: c_int; // initialized in start_color()
+
+// local variables
 var COLOR_PAIRS: c_int = c.PDC_COLOR_PAIRS; // defined in curspriv.h, = 256
 
-var default_colors: bool = false; // FALSE
+var default_colors: bool = false;
 var first_col: c_short = 0;
 var allocnum: c_int = 0;
 
@@ -17,11 +35,16 @@ export fn start_color2() c_int {
     // TODO: macro that only works if DEBUG mode is enabled. Work on later.
     // PDC_LOG("start_color() - called\n");
 
+    // GE: initilize this global variable here because extern var cannot have initializers
+    COLORS = 0;
+
     if (c.SP == null or c.SP.*.mono)
         return c.ERR;
 
     c.SP.*.color_started = true;
     _ = c.PDC_set_blink(false); // Also sets COLORS
+
+    // std.debug.print("DEBUG [zig]start_color() :: vars: COLORS {}\n", .{COLORS});
 
     if (!default_colors and c.SP.*.orig_attr and c.getenv("PDC_ORIGINAL_COLORS") != null)
         default_colors = true;
@@ -68,9 +91,23 @@ export fn init_pair2(pair: c_short, fg: c_short, bg: c_short) c_int {
     // TODO: macro that only works if DEBUG mode is enabled. Work on later.
     // PDC_LOG("init_pair() - called: pair %d fg %d bg %d\n", pair, fg, bg);
 
-    if (c.SP == null or !c.SP.*.color_started or pair < 1 or pair >= COLOR_PAIRS or
-        fg < first_col or fg >= COLORS or bg < first_col or bg >= COLORS)
+    // std.debug.print("[zig]init_pair() :: called: pair {} fg {} bg {}\n", .{ pair, fg, bg });
+    // std.debug.print("[zig]init_pair() :: vars: COLORS {} first_col {} \n", .{ COLORS, first_col });
+
+    if (c.SP == null) {
+        // std.debug.print("init_pair() :: (SP == null) is {}\n", .{c.SP == null});
         return c.ERR;
+    }
+
+    if (!c.SP.*.color_started) {
+        // std.debug.print("init_pair() :: (!SP.*.color_started) is {}\n", .{!c.SP.*.color_started});
+        return c.ERR;
+    }
+
+    if (pair < 1 or pair >= COLOR_PAIRS or fg < first_col or fg >= COLORS or bg < first_col or bg >= COLORS) {
+        // std.debug.print("init_pair() :: returning ERR :: (pair {} > 1), (pair {} >= COLOR_PAIRS {}), (fg {} < first_col {}) or (fg {} >= COLORS {}) or (bg {} < first_col {}) or (bg {} >= COLORS {})\n", .{ pair, pair, COLOR_PAIRS, fg, first_col, fg, COLORS, bg, first_col, bg, COLORS });
+        return c.ERR;
+    }
 
     _init_pair_core2(pair, fg, bg);
     return c.OK;
