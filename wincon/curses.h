@@ -919,6 +919,7 @@ PDCEX  int     border(chtype, chtype, chtype, chtype,
                       chtype, chtype, chtype, chtype);
 PDCEX  int     box(WINDOW *, chtype, chtype);
 PDCEX  bool    can_change_color(void);
+PDCEX  bool    can_change_color2(void); // color.zig
 PDCEX  int     cbreak(void);
 PDCEX  int     chgat(int, attr_t, short, const void *);
 PDCEX  int     clearok(WINDOW *, bool);
@@ -926,6 +927,7 @@ PDCEX  int     clear(void);
 PDCEX  int     clrtobot(void);
 PDCEX  int     clrtoeol(void);
 PDCEX  int     color_content(short, short *, short *, short *);
+PDCEX  int     color_content2(short, short *, short *, short *); // color.zig
 PDCEX  int     color_set(short, void *);
 PDCEX  int     copywin(const WINDOW *, WINDOW *, int, int, int,
                        int, int, int, int);
@@ -954,6 +956,7 @@ PDCEX  int     getstr(char *);
 PDCEX  WINDOW *getwin(FILE *);
 PDCEX  int     halfdelay(int);
 PDCEX  bool    has_colors(void);
+PDCEX  bool    has_colors2(void); // color.zig
 PDCEX  bool    has_ic(void);
 PDCEX  bool    has_il(void);
 PDCEX  int     hline(chtype, int);
@@ -964,7 +967,9 @@ PDCEX  int     inchnstr(chtype *, int);
 PDCEX  int     inchstr(chtype *);
 PDCEX  chtype  inch(void);
 PDCEX  int     init_color(short, short, short, short);
+PDCEX  int     init_color2(short, short, short, short); // color.zig
 PDCEX  int     init_pair(short, short, short);
+PDCEX  int     init_pair2(short, short, short); // color.zig
 PDCEX  WINDOW *initscr(void);
 PDCEX  int     innstr(char *, int);
 PDCEX  int     insch(chtype);
@@ -1048,6 +1053,7 @@ PDCEX  int     notimeout(WINDOW *, bool);
 PDCEX  int     overlay(const WINDOW *, WINDOW *);
 PDCEX  int     overwrite(const WINDOW *, WINDOW *);
 PDCEX  int     pair_content(short, short *, short *);
+PDCEX  int     pair_content2(short, short *, short *); // color.zig
 PDCEX  int     pechochar(WINDOW *, chtype);
 PDCEX  int     pnoutrefresh(WINDOW *, int, int, int, int, int, int);
 PDCEX  int     prefresh(WINDOW *, int, int, int, int, int, int);
@@ -1090,6 +1096,7 @@ PDCEX  int     slk_touch(void);
 PDCEX  int     standend(void);
 PDCEX  int     standout(void);
 PDCEX  int     start_color(void);
+PDCEX  int     start_color2(void); // color.zig
 PDCEX  WINDOW *subpad(WINDOW *, int, int, int, int);
 PDCEX  WINDOW *subwin(WINDOW *, int, int, int, int);
 PDCEX  int     syncok(WINDOW *, bool);
@@ -1303,10 +1310,14 @@ PDCEX  mmask_t getmouse(void);
 /* ncurses */
 
 PDCEX  int     alloc_pair(int, int);
+PDCEX  int     alloc_pair2(int, int); // color.zig
 PDCEX  int     assume_default_colors(int, int);
+PDCEX  int     assume_default_colors2(int, int); // color.zig
 PDCEX  const char *curses_version(void);
 PDCEX  int     find_pair(int, int);
+PDCEX  int     find_pair2(int, int); // color.zig
 PDCEX  int     free_pair(int);
+PDCEX  int     free_pair2(int); // color.zig
 PDCEX  bool    has_key(int);
 PDCEX  bool    is_cleared(const WINDOW *);
 PDCEX  bool    is_idcok(const WINDOW *);
@@ -1322,6 +1333,7 @@ PDCEX  bool    is_subwin(const WINDOW *);
 PDCEX  bool    is_syncok(const WINDOW *);
 PDCEX  int     set_tabsize(int);
 PDCEX  int     use_default_colors(void);
+PDCEX  int     use_default_colors2(void); // color.zig
 PDCEX  int     wgetdelay(const WINDOW *);
 PDCEX  WINDOW *wgetparent(const WINDOW *);
 PDCEX  int     wgetscrreg(const WINDOW *, int *, int *);
@@ -1366,6 +1378,7 @@ PDCEX  int     PDC_ungetch(int);
 PDCEX  int     PDC_set_blink(bool);
 PDCEX  int     PDC_set_bold(bool);
 PDCEX  int     PDC_set_line_color(short);
+PDCEX  int     PDC_set_line_color2(short); // color.zig
 PDCEX  void    PDC_set_title(const char *);
 
 PDCEX  int     PDC_clearclipboard(void);

@@ -44,6 +44,18 @@ const c = @cImport({
 // end chat ===========================
 //
 
+// TODO: need to finish this struct
+pub const RIPPEDOFFLINE = extern struct { // structure for ripped off lines
+    line: c_int,
+    //int (*init)(WINDOW *, int); // TODO: how do I translate this?
+};
+
+// typedef struct           /* structure for ripped off lines */
+// {
+//     int line;
+//     int (*init)(WINDOW *, int);
+// } RIPPEDOFFLINE;
+
 // Zig version of MOUSE_STATUS struct from curses.h
 pub const MOUSE_STATUS = extern struct {
     x: c_int, // absolute column, 0 based, measured in characters

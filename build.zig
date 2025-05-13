@@ -54,7 +54,7 @@ pub fn build(b: *std.Build) void {
     const initscr_zig = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/initscr2.zig", "-lc", "-target", "x86_64-windows-gnu" });
 
     // Move the file after it's built
-    const mv_initscr = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "move2.obj", "wincon/move2.obj" });
+    const mv_initscr = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "initscr2.obj", "wincon/initscr2.obj" });
     mv_initscr.step.dependOn(&initscr_zig.step);
 
     // delete the extra '.obj.obj' file
@@ -63,6 +63,22 @@ pub fn build(b: *std.Build) void {
 
     const build_initscr = b.step("initscr", "Build zig object");
     build_initscr.dependOn(&del_initscr_objobj.step);
+
+    //
+    // color.zig
+    //
+    const color_zig = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/color2.zig", "-lc", "-target", "x86_64-windows-gnu" });
+
+    // Move the file after it's built
+    const mv_color = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "color2.obj", "wincon/color2.obj" });
+    mv_color.step.dependOn(&color_zig.step);
+
+    // delete the extra '.obj.obj' file
+    const del_color_objobj = b.addSystemCommand(&.{ "cmd", "/C", "del", "color2.obj.obj" });
+    del_color_objobj.step.dependOn(&mv_color.step);
+
+    const build_color = b.step("color", "Build zig object");
+    build_color.dependOn(&del_color_objobj.step);
 
     //
     // Step 2: build .c files in the wincon directory

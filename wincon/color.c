@@ -9,21 +9,21 @@ color
 
 ### Synopsis
 
-    bool has_colors(void);
-    int start_color(void);
-    int init_pair(short pair, short fg, short bg);
-    int pair_content(short pair, short *fg, short *bg);
-    bool can_change_color(void);
-    int init_color(short color, short red, short green, short blue);
-    int color_content(short color, short *red, short *green, short *blue);
+   bool has_colors(void);
+   int start_color(void);
+   int init_pair(short pair, short fg, short bg);
+   int pair_content(short pair, short *fg, short *bg);
+   bool can_change_color(void);
+   int init_color(short color, short red, short green, short blue);
+   int color_content(short color, short *red, short *green, short *blue);
 
-    int alloc_pair(int fg, int bg);
-    int assume_default_colors(int f, int b);
-    int find_pair(int fg, int bg);
-    int free_pair(int pair);
-    int use_default_colors(void);
+   int alloc_pair(int fg, int bg);
+   int assume_default_colors(int f, int b);
+   int find_pair(int fg, int bg);
+   int free_pair(int pair);
+   int use_default_colors(void);
 
-    int PDC_set_line_color(short color);
+   int PDC_set_line_color(short color);
 
 ### Description
 
