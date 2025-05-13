@@ -35,17 +35,17 @@ pub fn build(b: *std.Build) void {
     //
     // move.zig
     //
-    const zig_move_obj = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/move2.zig", "-lc", "-target", "x86_64-windows-gnu" });
+    const move_zig = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/move2.zig", "-lc", "-target", "x86_64-windows-gnu" });
 
     // Move the file after it's built
-    const move_move_obj = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "move2.obj", "wincon/move2.obj" });
-    move_move_obj.step.dependOn(&zig_move_obj.step);
+    const mv_move = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "move2.obj", "wincon/move2.obj" });
+    mv_move.step.dependOn(&move_zig.step);
 
     // delete the extra '.obj.obj' file
     const del_old_move = b.addSystemCommand(&.{ "cmd", "/C", "del", "move2.obj.obj" });
-    del_old_move.step.dependOn(&move_move_obj.step);
+    del_old_move.step.dependOn(&mv_move.step);
 
-    const build_move_step = b.step("build-zig2", "Build move.obj for Windows");
+    const build_move_step = b.step("move", "Build zig object");
     build_move_step.dependOn(&del_old_move.step);
 
     //
@@ -80,6 +80,24 @@ pub fn build(b: *std.Build) void {
     const build_color = b.step("color", "Build zig object");
     build_color.dependOn(&del_color_objobj.step);
 
+    // TODO: run this in a loop so I don't have to keep redefining everything!
+
+    //
+    // curses_h.zig
+    //
+    const curses_h_zig = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/curses_h.zig", "-lc", "-target", "x86_64-windows-gnu" });
+
+    // Move the file after it's built
+    const mv_curses_h = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "curses_h.obj", "wincon/curses_h.obj" });
+    mv_curses_h.step.dependOn(&curses_h_zig.step);
+
+    // delete the extra '.obj.obj' file
+    const del_curses_h_objobj = b.addSystemCommand(&.{ "cmd", "/C", "del", "curses_h.obj.obj" });
+    del_curses_h_objobj.step.dependOn(&mv_curses_h.step);
+
+    const build_curses_h = b.step("curses_h", "Build zig object");
+    build_curses_h.dependOn(&del_curses_h_objobj.step);
+
     //
     // Step 2: build .c files in the wincon directory
     //
@@ -104,12 +122,14 @@ pub fn build(b: *std.Build) void {
         "cc",
         "-Wl,--out-implib,pdcurses.a",
         "-DPDC_WIDE -DPDC_FORCE_UTF8",
+        // "-DGETEST=26",
         "-shared",
         "-o",
         "pdcurses.dll",
         "wincon/beep.obj",
         "wincon/move2.obj",
         "wincon/color2.obj",
+        "wincon/curses_h.obj",
         "wincon/pdcurses.obj",
         "wincon/addch.c",
         "wincon/addchstr.c",
@@ -175,6 +195,7 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
+        //.defineCMacro = .{ "GETEST", "123" }, // TODO: this didn't work
     });
 
     // This creates another `std.Build.Step.Compile`, but this one builds an executable

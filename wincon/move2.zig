@@ -14,7 +14,7 @@ const c = @cImport({
 // ### Synopsis
 //
 //     int move(int y, int x);
-//    int mvcur(int oldrow, int oldcol, int newrow, int newcol);
+//     int mvcur(int oldrow, int oldcol, int newrow, int newcol);
 //     int wmove(WINDOW *win, int y, int x);
 //
 // ### Description
@@ -52,52 +52,8 @@ const c = @cImport({
 //       4) TESTING!  so far, move2 seems to work, but not sure how to test mvcur2
 //
 
-//
-// GE testing definition of this c struct from curses.h in zig:
-//
-
-// original version
-// typedef struct _win       /* definition of a window */
-// {
-//     int   _cury;          /* current pseudo-cursor */
-//     int   _curx;
-//     int   _maxy;          /* max window coordinates */
-//     int   _maxx;
-//     int   _begy;          /* origin on screen */
-//     int   _begx;
-//     int   _flags;         /* window properties */
-//     chtype _attrs;        /* standard attributes and colors */
-//     chtype _bkgd;         /* background, normally blank */
-//     bool  _clear;         /* causes clear at next refresh */
-//     bool  _leaveit;       /* leaves cursor where it is */
-//     bool  _scroll;        /* allows window scrolling */
-//     bool  _nodelay;       /* input character wait flag */
-//     bool  _immed;         /* immediate update flag */
-//     bool  _sync;          /* synchronise window ancestors */
-//     bool  _use_keypad;    /* flags keypad key mode active */
-//     chtype **_y;          /* pointer to line pointer array */
-//     int   *_firstch;      /* first changed character in line */
-//     int   *_lastch;       /* last changed character in line */
-//     int   _tmarg;         /* top of scrolling region */
-//     int   _bmarg;         /* bottom of scrolling region */
-//     int   _delayms;       /* milliseconds of delay for getch() */
-//     int   _parx, _pary;   /* coords relative to parent (0,0) */
-//     struct _win *_parent; /* subwin's pointer to parent win */
-
-//     /* these are used only if this is a pad */
-//     struct pdat
-//     {
-//         int _pad_y;
-//         int _pad_x;
-//         int _pad_top;
-//         int _pad_left;
-//         int _pad_bottom;
-//         int _pad_right;
-//     } _pad;               /* Pad-properties structure */
-// } WINDOW;
-
 // zig version
-pub const WINDOW = extern struct { // definition of a window
+const WINDOW = extern struct { // definition of a window
     _cury: c_int, // current pseudo-cursor
     _curx: c_int,
     _maxy: c_int, // max window coordinates
@@ -171,7 +127,6 @@ export fn mvcur2(oldrow: c_int, oldcol: c_int, newrow: c_int, newcol: c_int) c_i
     return c.OK;
 }
 
-// TODO: not sure how to pass in that WINDOW struct yet
 export fn wmove2(win: ?*WINDOW, y: c_int, x: c_int) c_int {
     // TODO: macro that only works if DEBUG mode is enabled. Work on later.
     // PDC_LOG("wmove() - called: y=%d x=%d\n", y, x);

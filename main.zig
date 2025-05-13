@@ -9,6 +9,8 @@ const c = @cImport({
 const KEY_Q: c_int = 113;
 
 fn first_test() void {
+    // std.debug.print("GETEST={}", .{c.PDC_WIDE});
+
     _ = c.initscr(); //  : [*c]win
     _ = c.printw("hello again\n"); // this prints something to the screen, and returns the num of chars it printed
     _ = c.refresh();
