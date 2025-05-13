@@ -13,7 +13,7 @@ var default_colors: bool = false; // FALSE
 var first_col: c_short = 0;
 var allocnum: c_int = 0;
 
-export fn start_color() c_int {
+export fn start_color2() c_int {
     // TODO: macro that only works if DEBUG mode is enabled. Work on later.
     // PDC_LOG("start_color() - called\n");
 
@@ -31,6 +31,8 @@ export fn start_color() c_int {
     return c.OK;
 }
 
+// BUG: init_pair2 is not working, and it could be any of these 3 items.
+
 fn _normalize2(fg: *c_short, bg: *c_short) void {
     if (fg.* == -1)
         fg.* = if (c.SP.*.orig_attr) c.SP.*.orig_fore else c.COLOR_WHITE;
@@ -41,7 +43,8 @@ fn _normalize2(fg: *c_short, bg: *c_short) void {
 
 // TODO: not sure about fg2 and bg2 - can I just pass in &fg and &bg?
 fn _init_pair_core2(pair: c_short, fg: c_short, bg: c_short) void {
-    var p: *c.PDC_PAIR = c.SP.*.atrtab + pair;
+    const _pair: usize = @intCast(pair);
+    var p: *c.PDC_PAIR = c.SP.*.atrtab + _pair; // still not sure what this is doing, since zig requires it to be cast to usize.
 
     var fg2 = fg;
     var bg2 = bg;
@@ -136,8 +139,11 @@ export fn pair_content2(pair: c_short, fg: ?*c_short, bg: ?*c_short) c_int {
     if (pair < 0 or pair >= COLOR_PAIRS or fg == null or bg == null)
         return c.ERR;
 
-    fg.* = c.SP.*.atrtab[pair].f;
-    bg.* = c.SP.*.atrtab[pair].b;
+    if (fg) |_fg|
+        _fg.* = c.SP.*.atrtab[@intCast(pair)].f;
+
+    if (bg) |_bg|
+        _bg.* = c.SP.*.atrtab[@intCast(pair)].b;
 
     return c.OK;
 }
@@ -157,7 +163,7 @@ export fn assume_default_colors2(f: c_int, b: c_int) c_int {
     return c.OK;
 }
 
-export fn use_default_colors() c_int {
+export fn use_default_colors2() c_int {
     // TODO: macro that only works if DEBUG mode is enabled. Work on later.
     //c.PDC_LOG("use_default_colors() - called\n");
     default_colors = true;
@@ -194,17 +200,20 @@ export fn PDC_init_atrtab2() void {
     _normalize2(&fg, &bg);
 
     while (i < c.PDC_COLOR_PAIRS) : (i += 1) {
-        p[i].f = fg;
-        p[i].b = bg;
-        p[i].set = false;
+        const _i: usize = @intCast(i);
+        p[_i].f = fg;
+        p[_i].b = bg;
+        p[_i].set = false;
     }
 }
 
 export fn free_pair2(pair: c_int) c_int {
-    if (pair < 1 or pair >= c.PDC_COLOR_PAIRS or !c.SP.*.atrtab[pair].set)
+    const _pair: usize = @intCast(pair);
+
+    if (pair < 1 or pair >= c.PDC_COLOR_PAIRS or !c.SP.*.atrtab[_pair].set)
         return c.ERR;
 
-    c.SP.*.atrtab[pair].set = false;
+    c.SP.*.atrtab[_pair].set = false;
     return c.OK;
 }
 
@@ -213,7 +222,8 @@ export fn find_pair2(fg: c_int, bg: c_int) c_int {
     var i: c_int = 0;
 
     while (i < c.PDC_COLOR_PAIRS) : (i += 1) {
-        if (p[i].set and p[i].f == fg and p[i].b == bg)
+        const _i: usize = @intCast(i);
+        if (p[_i].set and p[_i].f == fg and p[_i].b == bg)
             return i;
     }
 
@@ -227,12 +237,13 @@ fn _find_oldest2() c_int {
     var i: c_int = 1;
 
     while (i < c.PDC_COLOR_PAIRS) : (i += 1) {
-        if (!p[i].set)
+        const _i: usize = @intCast(i);
+        if (!p[_i].set)
             return i;
 
-        if (lowval == 0 or p[i].count < lowval) {
+        if (lowval == 0 or p[_i].count < lowval) {
             lowind = i;
-            lowval = p[i].count;
+            lowval = p[_i].count;
         }
     }
 

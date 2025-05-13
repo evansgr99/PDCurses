@@ -108,6 +108,7 @@ pub fn build(b: *std.Build) void {
         "zig-out/lib/pdcurses.dll",
         "wincon/beep.obj",
         "wincon/move2.obj",
+        "wincon/color2.obj",
         "wincon/pdcurses.obj",
         "wincon/addch.c",
         "wincon/addchstr.c",

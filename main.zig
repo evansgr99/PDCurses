@@ -31,6 +31,28 @@ fn first_test() void {
 
     _ = c.printw("after movements\n"); // this prints something to the screen, and returns the num of chars it printed
 
+    if (c.has_colors2()) {
+        _ = c.start_color2();
+        _ = c.init_pair(13, c.COLOR_CYAN, c.COLOR_RED);
+        _ = c.attron(c.COLOR_PAIR(13));
+        _ = c.printw("some colored text");
+        _ = c.attroff(c.COLOR_PAIR(13));
+        _ = c.refresh();
+    } else {
+        _ = c.printw("can't do colors");
+    }
+
+    if (c.has_colors()) {
+        _ = c.start_color();
+        _ = c.init_pair(16, c.COLOR_CYAN, c.COLOR_RED);
+        _ = c.attron(c.COLOR_PAIR(16));
+        _ = c.printw("some more colored text");
+        _ = c.attroff(c.COLOR_PAIR(16));
+        _ = c.refresh();
+    } else {
+        _ = c.printw("still can't do colors");
+    }
+
     const key_input: c_int = c.getch();
     std.debug.print("got key [{d}]\n", .{key_input});
 
