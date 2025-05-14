@@ -17,32 +17,21 @@ fn first_test() void {
     // _ = c.flash(); // testing my custom code - works!
     // _ = c.beep(); // testing my custom code - works!
 
-    _ = c.move2(2, 2);
+    _ = c.move(2, 2);
 
-    _ = c.mvcur2(5, 5, 5, 5);
+    _ = c.mvcur(5, 5, 5, 5);
 
-    _ = c.wmove2(c.stdscr, 10, 10);
-
-    _ = c.refresh();
-
-    _ = c.printw("after movements\n"); // this prints something to the screen, and returns the num of chars it printed
-
-    _ = c.wmove2(c.stdscr, 7, 18);
+    _ = c.wmove(c.stdscr, 10, 10);
 
     _ = c.refresh();
 
     _ = c.printw("after movements\n"); // this prints something to the screen, and returns the num of chars it printed
 
-    if (c.has_colors2()) {
-        _ = c.start_color2();
-        const ip2 = c.init_pair2(13, c.COLOR_MAGENTA, c.COLOR_GREEN);
-        _ = c.attron(c.COLOR_PAIR(13));
-        _ = c.printw("some colored text %d", ip2);
-        _ = c.attroff(c.COLOR_PAIR(13));
-        _ = c.refresh();
-    } else {
-        _ = c.printw("can't do colors");
-    }
+    _ = c.wmove(c.stdscr, 7, 18);
+
+    _ = c.refresh();
+
+    _ = c.printw("after movements\n"); // this prints something to the screen, and returns the num of chars it printed
 
     if (c.has_colors()) {
         _ = c.start_color();

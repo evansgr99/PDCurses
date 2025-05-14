@@ -1,0 +1,6 @@
+move curses and other .h files to right places to clean this up
+
+clean up any other files taht don't belogn
+
+redownload the pdcurses and paste into these, to ensure they really rae the same (or just check move, beep, etc. to see if I cahnged anything)
+
