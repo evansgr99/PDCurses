@@ -37,7 +37,7 @@ pub fn build(b: *std.Build) void {
     const pdcurses_dll = b.addSystemCommand(&.{
         "zig",
         "cc",
-        "-Wl,--out-implib,pdcurses.a",
+        "-Wl,--out-implib,pdcurses.a", // testing
         "-DPDC_WIDE -DPDC_FORCE_UTF8",
         // "-DGETEST=26",
         "-shared",
