@@ -83,22 +83,6 @@ pub fn build(b: *std.Build) void {
     // TODO: run this in a loop so I don't have to keep redefining everything!
 
     //
-    // curses_h.zig
-    //
-    const curses_h_zig = b.addSystemCommand(&.{ "zig", "build-obj", "wincon/curses_h.zig", "-lc", "-target", "x86_64-windows-gnu" });
-
-    // Move the file after it's built
-    const mv_curses_h = b.addSystemCommand(&.{ "cmd", "/C", "move", "/Y", "curses_h.obj", "wincon/curses_h.obj" });
-    mv_curses_h.step.dependOn(&curses_h_zig.step);
-
-    // delete the extra '.obj.obj' file
-    const del_curses_h_objobj = b.addSystemCommand(&.{ "cmd", "/C", "del", "curses_h.obj.obj" });
-    del_curses_h_objobj.step.dependOn(&mv_curses_h.step);
-
-    const build_curses_h = b.step("curses_h", "Build zig object");
-    build_curses_h.dependOn(&del_curses_h_objobj.step);
-
-    //
     // Step 2: build .c files in the wincon directory
     //
     // GE: trying to duplicate this command:  windres pdcurses.rc pdcurses.obj
@@ -129,7 +113,6 @@ pub fn build(b: *std.Build) void {
         "wincon/beep.obj",
         "wincon/move2.obj",
         "wincon/color2.obj",
-        "wincon/curses_h.obj",
         "wincon/pdcurses.obj",
         "wincon/addch.c",
         "wincon/addchstr.c",
